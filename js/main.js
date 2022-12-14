@@ -1,11 +1,10 @@
 function carModel(first) {
-    // let sum = 7 ;
+// let sum = 7 ;
     this.name = first;
     this.randomStart = randomSpeed();
     this.coveredDistance = 0;
+    this.copyForLog = 0;
 }
-
-// let a = new carModel('aa')
 
 let map = [];
 for (let i = 0; i < 300; i++) {
@@ -25,26 +24,28 @@ function randomSpeed() {
 }
 
 function inputCars() {
-    //validation
+//validation
     let sumCars;
-    sumCars = prompt('pleas enter the count of cars for race :') * 1;
+    sumCars = prompt('pleas enter the count of cars for race :');
     if (Number.isNaN(sumCars)) {
         throw new Error('I told you to enter the number!!!!');
     }
     let arrayCars = [];
     for (let i = 1; i <= sumCars; i++) {
-        arrayCars.push(new carModel(prompt(`enter the cars number ${i} :`)));
+        arrayCars.push(new carModel(prompt(`enter the cars number ${i}: `)));
     }
     return arrayCars;
 }
+
 let array = inputCars();
 array.sort((a, b) => b.randomStart - a.randomStart)
 let indexOfCarsDistance = 0;
 let rank = [];
 let copy;
-while (true) {
+for (let step = 1; true; step++) {
     for (let indexOfCars = 0; indexOfCars < array.length; indexOfCars++) {
-        array[indexOfCars]['coveredDistance'] = array[indexOfCars]['coveredDistance'] + randomSpeed();
+        array[indexOfCars]['copyForLog'] = randomSpeed()
+        array[indexOfCars]['coveredDistance'] = array[indexOfCars]['coveredDistance'] + array[indexOfCars]['copyForLog'];
         if (array[indexOfCars]['coveredDistance'] <= 300) {
             indexOfCarsDistance = indexOfCarsDistance + 1;
         }
@@ -55,15 +56,19 @@ while (true) {
             }
             array[indexOfCars]['coveredDistance'] = copy;
         }
-
         if (array[indexOfCars]['coveredDistance'] > 300) {
+            console.log(`${array[indexOfCars]['name']} win `)
             rank.push(array[indexOfCars]['name'])
         }
         for (let i = 0; i < array.length; i++) {
-            map[array[indexOfCars]['coveredDistance']] = array[indexOfCars]['name'];
+            map[array[indexOfCars]['coveredDistance'] - 1] = array[indexOfCars]['name'];
         }
     }
-    console.log(map);
+    console.log(`step = ${step}`)
+    for (let i = 0; i < array.length; i++) {
+        console.log(`${array[i]['name']}: ${array[i]['copyForLog']}`)
+    }
+    console.log(map.join().replaceAll(',', ""));
     map = mapDef();
     if (indexOfCarsDistance === 0) {
         break;
@@ -71,5 +76,6 @@ while (true) {
     indexOfCarsDistance = 0;
 }
 rank = [...new Set(rank)];
-console.log(rank);
-
+for (let i = 0; i < rank.length; i++) {
+    console.log(`rank ${i + 1} : ${rank[i]}`)
+}
